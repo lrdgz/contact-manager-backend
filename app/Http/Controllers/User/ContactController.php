@@ -35,7 +35,7 @@ class ContactController extends Controller
             $generate_name = uniqid()."_".time().date('Ymd')."_IMG";
             $base64Image = $profile_picture;
             $fileBin = file_get_contents($base64Image);
-            $mimeType = mime_content_type($fileBin);
+            $mimeType = mime_content_type($base64Image);
             if ("image/png" == $mimeType){
                 $file_name = $generate_name . ".png";
             }else if ("image/jpeg" == $mimeType){
@@ -48,34 +48,34 @@ class ContactController extends Controller
                     'message' => 'Not accepted image type'
                 ], 500);
             }
-
-            $user_token = $request->token;
-            $user = auth('users')->authenticate($user_token);
-            $user_id = $user->id;
-
-            $this->contacts->user_id = $user_id;
-            $this->contacts->phonenumber = $request->phonenumber;
-            $this->contacts->firstname = $request->firstname;
-            $this->contacts->lastname = $request->lastname;
-            $this->contacts->email = $request->email;
-            $this->contacts->image_file = $request->profile_image;
-            $this->contacts->save();
-
-            if($profile_picture == null){
-
-            } else {
-                file_put_contents("./profile_images/" . $file_name, $fileBin);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'contacts saved successfully'
-            ], 200);
         }
+
+        $user_token = $request->token;
+        $user = auth('users')->authenticate($user_token);
+        $user_id = $user->id;
+
+        $this->contacts->user_id = $user_id;
+        $this->contacts->phonenumber = $request->phonenumber;
+        $this->contacts->firstname = $request->firstname;
+        $this->contacts->lastname = $request->lastname;
+        $this->contacts->email = $request->email;
+        $this->contacts->image_file = $file_name;
+        $this->contacts->save();
+
+        if($profile_picture == null){
+
+        } else {
+            file_put_contents("./profile_images/" . $file_name, $fileBin);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'contacts saved successfully'
+        ], 200);
     }
 
 
-    public function getPaginatedContacts($pagination = null, $token){
+    public function getPaginatedContacts( $token, $pagination = null ){
         $file_directory = $this->base_url . "/profile_images/";
         $user = auth('users')->authenticate($token);
         $user_id = $user->id;
@@ -125,7 +125,7 @@ class ContactController extends Controller
             $generate_name = uniqid() . "_" . time() . date('Ymd') . "_IMG";
             $base64Image = $profile_picture;
             $fileBin = file_get_contents($base64Image);
-            $mimeType = mime_content_type($fileBin);
+            $mimeType = mime_content_type($base64Image);
             if ("image/png" == $mimeType) {
                 $file_name = $generate_name . ".png";
             } else if ("image/jpeg" == $mimeType) {
@@ -202,7 +202,7 @@ class ContactController extends Controller
 
     }
 
-    public function searchData($search, $pagination =null, $token){
+    public function searchData($search, $token, $pagination =null ){
         $file_directory = $this->base_url . "/profile_images/";
         $user = auth('users')->authenticate($token);
         $user_id = $user->id;
