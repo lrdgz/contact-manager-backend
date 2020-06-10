@@ -48,8 +48,17 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception)
+//    public function render($request, Throwable $exception)
+//    {
+//        return parent::render($request, $exception);
+//    }
+
+        public function render($request, Throwable $exception)
     {
-        return parent::render($request, $exception);
+        return response()->json([
+            'status' => 401,
+            'message' => 'unauthenticated'
+        ]);
     }
+
 }

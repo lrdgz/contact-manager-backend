@@ -22,7 +22,6 @@ class ContactController extends Controller
 
     public function addContacts(Request $request){
         $request->validate([
-            'token' => 'required',
             'firstname' => 'required|string',
             'phonenumber' => 'required|string',
         ]);
@@ -100,11 +99,9 @@ class ContactController extends Controller
 
     public function editSingleData(Request $request, $id){
         $request->validate([
-            'token' => 'required',
             'firstname' => 'required|string',
             'phonenumber' => 'required|string',
         ]);
-
 
         $findData = $this->contacts::find($id);
         if(!$findData){
